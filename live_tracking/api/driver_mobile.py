@@ -9,7 +9,7 @@ import base64
 import frappe
 from frappe import _
 from frappe.model.workflow import apply_workflow, get_transitions
-from frappe.utils import flt, now_datetime, today
+from frappe.utils import cint, flt, now_datetime, today
 
 from live_tracking.api import driver as guest_driver
 from live_tracking.api import tracking
@@ -239,6 +239,34 @@ def get_active_trip():
 		"available_actions": [t.get("action") for t in transitions],
 		"session": tracking.build_tracking_payload(session_row) if session_row else None,
 	}
+
+
+@frappe.whitelist()
+def get_trip_history(limit: int = 20):
+	"""Past (and current) trips for this driver, most recently updated
+	first — so the driver app has something to show even on a day with
+	nothing currently Assigned, instead of a permanently empty screen.
+	Drivers also just want to see what they did before, ongoing."""
+	driver = _get_driver()
+	return frappe.get_all(
+		"Delivery Order Towing",
+		filters={"driver": driver.name, "docstatus": ["<", 2], "status": ["!=", "Draft"]},
+		fields=[
+			"name",
+			"status",
+			"customer_name",
+			"nomor_polisi",
+			"lokasi_pickup",
+			"lokasi_tujuan",
+			"tanggal_do",
+			"waktu_assigned",
+			"waktu_pickup",
+			"waktu_delivered",
+			"waktu_done",
+		],
+		order_by="modified desc",
+		limit_page_length=cint(limit) or 20,
+	)
 
 
 @frappe.whitelist()

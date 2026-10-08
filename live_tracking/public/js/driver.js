@@ -13,9 +13,13 @@
 	}
 
 	var map = L.map("lt-map", { zoomControl: false, attributionControl: true }).setView([-6.2, 106.8], 13);
-	L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+	// See the same fix in track.js — tile.openstreetmap.org blocks
+	// distributed-app embedding, and CARTO's basemap now needs an API key
+	// too. Esri's World Street Map tiles are free/keyless and meant for
+	// this, confirmed with a real tile fetch before shipping this.
+	L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
 		maxZoom: 19,
-		attribution: "&copy; OpenStreetMap contributors",
+		attribution: "Tiles &copy; Esri",
 	}).addTo(map);
 
 	var selfMarker = null;

@@ -15,6 +15,20 @@ from live_tracking.api.driver_mobile import ACTIVE_DO_STATUSES
 ADDRESS_CACHE_TTL = 300
 
 
+def _real_position(lat, lng):
+	"""None unless both values are set AND not (0, 0) — Frappe Float fields
+	default to 0 (not null) until a driver's phone ever actually sends a
+	GPS ping, and (0, 0) ("Null Island", off the African coast) is never a
+	real position for this fleet. Returning it as-is let the mobile app's
+	map zoom out to show the whole world with a driver pinned in the
+	Atlantic — same bug, fixed at the source instead of just client-side."""
+	if not lat or not lng:
+		return None, None
+	if abs(lat) < 0.0001 and abs(lng) < 0.0001:
+		return None, None
+	return lat, lng
+
+
 def _get_address_label(latitude, longitude):
 	if not latitude or not longitude:
 		return None
@@ -81,8 +95,10 @@ def get_fleet_overview():
 		do = active_by_driver.get(d.name)
 		if do:
 			session = session_by_do.get(do.name)
-			lat = (session.current_latitude if session else None) or d.latitude
-			lng = (session.current_longitude if session else None) or d.longitude
+			lat, lng = _real_position(
+				(session.current_latitude if session else None) or d.latitude,
+				(session.current_longitude if session else None) or d.longitude,
+			)
 			result.append(
 				{
 					"name": d.name,
@@ -110,15 +126,16 @@ def get_fleet_overview():
 			# either, and there's no need to burn Nominatim calls on a
 			# position nobody's currently acting on.
 			is_online = bool(d.is_online)
+			lat, lng = _real_position(d.latitude, d.longitude)
 			result.append(
 				{
 					"name": d.name,
 					"full_name": d.full_name,
 					"cell_number": d.cell_number,
 					"status": "idle" if is_online else "offline",
-					"latitude": d.latitude,
-					"longitude": d.longitude,
-					"address": _get_address_label(d.latitude, d.longitude) if is_online else None,
+					"latitude": lat,
+					"longitude": lng,
+					"address": _get_address_label(lat, lng) if is_online else None,
 					"heading": None,
 					"speed_kmh": None,
 					"last_update": d.last_location_at,
