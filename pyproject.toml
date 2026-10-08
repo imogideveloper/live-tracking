@@ -7,13 +7,20 @@ description = "Gojek-style live GPS tracking for towing delivery orders"
 requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]
-dependencies = [
-    # "frappe~=15.0.0" # Installed and managed by bench.
-]
+dependencies = []
 
 [build-system]
 requires = ["flit_core >=3.4,<4"]
 build-backend = "flit_core.buildapi"
+
+# Frappe Cloud reads this to know which Frappe/ERPNext versions this app can
+# be deployed against — without it, "Add App" fails with "Could not find a
+# compatible Frappe version". erpnext is listed too since this app's own
+# doc_events hook onto standard ERPNext doctypes (Driver, Customer, Sales
+# Order), the same pin imogi_finance (this app's required_apps) uses.
+[tool.bench.frappe-dependencies]
+frappe = ">=15.0.0,<16.0.0"
+erpnext = ">=15.0.0,<16.0.0"
 
 # These dependencies are only installed when developer mode is enabled
 [tool.bench.dev-dependencies]
