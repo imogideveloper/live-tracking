@@ -1,0 +1,22 @@
+{% extends "templates/base.html" %}
+
+{% block title %}{{ _("Live Tracking Driver") }}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/assets/live_tracking/leaflet/leaflet.css">
+<link rel="stylesheet" href="/assets/live_tracking/css/tracking.css">
+{% endblock %}
+
+{% block content %}
+<div class="lt-page" id="lt-driver-app" data-token="{{ frappe.form_dict.token | e if frappe.form_dict.token else '' }}">
+	<div class="lt-map" id="lt-map"></div>
+	<div class="lt-sheet lt-driver-card" id="lt-sheet">
+		<div class="lt-error">{{ _("Memuat data perjalanan...") }}</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="/assets/live_tracking/leaflet/leaflet.js"></script>
+<script src="/assets/live_tracking/js/driver.js?v=4"></script>
+{% endblock %}

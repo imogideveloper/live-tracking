@@ -1,0 +1,317 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "TWR-.YYYY.-.#####",
+ "creation": "2026-09-15 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "user",
+  "customer",
+  "customer_name",
+  "column_break_customer",
+  "status",
+  "requested_at",
+  "sb_route",
+  "pickup_label",
+  "pickup_latitude",
+  "pickup_longitude",
+  "column_break_route",
+  "dropoff_label",
+  "dropoff_latitude",
+  "dropoff_longitude",
+  "sb_vehicle",
+  "vehicle_type",
+  "vehicle_plate_number",
+  "vehicle_chassis_number",
+  "column_break_vehicle",
+  "vehicle_brand",
+  "vehicle_model",
+  "vehicle_note",
+  "price_estimate",
+  "sb_match",
+  "matched_driver",
+  "delivery_order_towing",
+  "column_break_match",
+  "cancelled_reason",
+  "cancellation_fee",
+  "sb_rating",
+  "rating",
+  "column_break_rating",
+  "review",
+  "sb_driver_rating",
+  "driver_rating",
+  "column_break_driver_rating",
+  "driver_review"
+ ],
+ "fields": [
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Pemohon (User)",
+   "options": "User",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "customer.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Nama Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_customer",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Searching",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Searching\nOffered\nAssigned\nCompleted\nNo Driver Found\nCancelled\nExpired",
+   "reqd": 1
+  },
+  {
+   "default": "now",
+   "fieldname": "requested_at",
+   "fieldtype": "Datetime",
+   "label": "Waktu Permintaan",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_route",
+   "fieldtype": "Section Break",
+   "label": "Rute"
+  },
+  {
+   "fieldname": "pickup_label",
+   "fieldtype": "Data",
+   "label": "Lokasi Pick Up",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pickup_latitude",
+   "fieldtype": "Float",
+   "label": "Pick Up Latitude",
+   "precision": "6",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pickup_longitude",
+   "fieldtype": "Float",
+   "label": "Pick Up Longitude",
+   "precision": "6",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_route",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dropoff_label",
+   "fieldtype": "Data",
+   "label": "Lokasi Tujuan",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dropoff_latitude",
+   "fieldtype": "Float",
+   "label": "Tujuan Latitude",
+   "precision": "6",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dropoff_longitude",
+   "fieldtype": "Float",
+   "label": "Tujuan Longitude",
+   "precision": "6",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_vehicle",
+   "fieldtype": "Section Break",
+   "label": "Kendaraan"
+  },
+  {
+   "fieldname": "vehicle_type",
+   "fieldtype": "Data",
+   "label": "Tipe Kendaraan",
+   "reqd": 1
+  },
+  {
+   "fieldname": "vehicle_plate_number",
+   "fieldtype": "Data",
+   "label": "Nomor Polisi Kendaraan",
+   "reqd": 1
+  },
+  {
+   "fieldname": "vehicle_chassis_number",
+   "fieldtype": "Data",
+   "label": "Nomor Rangka (VIN)"
+  },
+  {
+   "fieldname": "column_break_vehicle",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "vehicle_brand",
+   "fieldtype": "Data",
+   "label": "Merk Kendaraan"
+  },
+  {
+   "fieldname": "vehicle_model",
+   "fieldtype": "Data",
+   "label": "Model Kendaraan"
+  },
+  {
+   "fieldname": "vehicle_note",
+   "fieldtype": "Small Text",
+   "label": "Catatan Kendaraan"
+  },
+  {
+   "fieldname": "price_estimate",
+   "fieldtype": "Currency",
+   "label": "Estimasi Harga",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_match",
+   "fieldtype": "Section Break",
+   "label": "Hasil Matching"
+  },
+  {
+   "fieldname": "matched_driver",
+   "fieldtype": "Link",
+   "label": "Driver Tertugas",
+   "options": "Driver",
+   "read_only": 1
+  },
+  {
+   "fieldname": "delivery_order_towing",
+   "fieldtype": "Link",
+   "label": "Delivery Order Towing",
+   "options": "Delivery Order Towing",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_match",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cancelled_reason",
+   "fieldtype": "Small Text",
+   "label": "Alasan Batal/Gagal"
+  },
+  {
+   "fieldname": "cancellation_fee",
+   "fieldtype": "Currency",
+   "label": "Biaya Pembatalan",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_rating",
+   "fieldtype": "Section Break",
+   "label": "Rating Customer ke Driver"
+  },
+  {
+   "fieldname": "rating",
+   "fieldtype": "Int",
+   "label": "Rating (1-5)",
+   "non_negative": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_rating",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "review",
+   "fieldtype": "Small Text",
+   "label": "Ulasan",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_driver_rating",
+   "fieldtype": "Section Break",
+   "label": "Rating Driver ke Customer"
+  },
+  {
+   "fieldname": "driver_rating",
+   "fieldtype": "Int",
+   "label": "Rating (1-5)",
+   "non_negative": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_driver_rating",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "driver_review",
+   "fieldtype": "Small Text",
+   "label": "Ulasan",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-15 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Live Tracking",
+ "name": "Towing Request",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Admin Towing",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "if_owner": 1,
+   "read": 1,
+   "role": "Towing Customer",
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "pickup_label",
+ "track_changes": 1
+}

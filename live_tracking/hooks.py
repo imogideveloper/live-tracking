@@ -8,7 +8,29 @@ app_license = "mit"
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["imogi_finance"]
+
+# Fixtures
+# ------------------
+
+fixtures = [
+	{"doctype": "Custom Field", "filters": [["name", "in", [
+		"Driver-custom_user",
+		"Driver-custom_is_online",
+		"Driver-custom_current_latitude",
+		"Driver-custom_current_longitude",
+		"Driver-custom_last_location_at",
+		"Driver-custom_unit_towing",
+		"Customer-custom_user",
+	]]]},
+	{"doctype": "Role", "filters": [["name", "in", ["Towing Customer", "Towing Driver"]]]},
+	{"doctype": "Custom DocPerm", "filters": [
+		["parent", "=", "Delivery Order Towing"], ["role", "=", "Towing Driver"]
+	]},
+	{"doctype": "Client Script", "filters": [
+		["name", "=", "Delivery Order Towing-Form-Live-Tracking"]
+	]},
+]
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
@@ -26,7 +48,7 @@ app_license = "mit"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/live_tracking/css/live_tracking.css"
-# app_include_js = "/assets/live_tracking/js/live_tracking.js"
+app_include_js = "/assets/live_tracking/js/towing_order_alert.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/live_tracking/css/live_tracking.css"
@@ -43,6 +65,13 @@ app_license = "mit"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
+# NOTE: "Delivery Order Towing" is a Custom DocType — Frappe's
+# add_code() skips doctype_js entirely for custom doctypes (see
+# frappe/desk/form/meta.py: `if self.custom: return`), so a hook here
+# would silently never load. The live-tracking icon/dialog on that form
+# is delivered via a "Client Script" fixture instead (see
+# fixtures/client_script.json) — the mechanism that actually works for
+# custom doctypes.
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -137,34 +166,40 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Delivery Order Towing": {
+		# A submitted doc's later saves fire "on_update_after_submit"
+		# INSTEAD OF "on_update" (see frappe/model/document.py
+		# run_post_save_methods) — and every workflow transition past the
+		# initial Draft->Assigned one happens on an already-submitted DO, so
+		# both events need the same handlers or status changes past
+		# "Assigned" (Pick Up, Delivered, Done, ...) never sync anywhere.
+		# "on_cancel" covers an actual docstatus 1->2 cancellation too.
+		"on_update": [
+			"live_tracking.integrations.delivery_order_towing.sync_tracking_session",
+			"live_tracking.integrations.delivery_order_towing.sync_towing_request_status",
+		],
+		"on_update_after_submit": [
+			"live_tracking.integrations.delivery_order_towing.sync_tracking_session",
+			"live_tracking.integrations.delivery_order_towing.sync_towing_request_status",
+		],
+		"on_cancel": [
+			"live_tracking.integrations.delivery_order_towing.sync_tracking_session",
+			"live_tracking.integrations.delivery_order_towing.sync_towing_request_status",
+		],
+	},
+}
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"live_tracking.tasks.all"
-# 	],
-# 	"daily": [
-# 		"live_tracking.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"live_tracking.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"live_tracking.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"live_tracking.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"cron": {
+		"*/1 * * * *": [
+			"live_tracking.api.matching.cleanup_stale_offers",
+		],
+	},
+}
 
 # Testing
 # -------
@@ -197,7 +232,7 @@ app_license = "mit"
 # Request Events
 # ----------------
 # before_request = ["live_tracking.utils.before_request"]
-# after_request = ["live_tracking.utils.after_request"]
+after_request = ["live_tracking.utils.allow_geolocation_for_tracking_pages"]
 
 # Job Events
 # ----------

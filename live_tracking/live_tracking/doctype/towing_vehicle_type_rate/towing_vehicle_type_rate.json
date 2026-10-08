@@ -1,0 +1,44 @@
+{
+ "actions": [],
+ "creation": "2026-09-22 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "vehicle_type",
+  "multiplier"
+ ],
+ "fields": [
+  {
+   "fieldname": "vehicle_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tipe Kendaraan",
+   "reqd": 1
+  },
+  {
+   "default": "1",
+   "description": "Estimasi harga dikali angka ini. 1 = tarif normal, 1.5 = 50% lebih mahal, dst.",
+   "fieldname": "multiplier",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Pengali Tarif",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-09-22 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Live Tracking",
+ "name": "Towing Vehicle Type Rate",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

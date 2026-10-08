@@ -1,0 +1,181 @@
+html, body {
+	height: 100%;
+	margin: 0;
+	background: #0f172a;
+}
+
+.lt-page {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	background: #f1f5f9;
+}
+
+.lt-map {
+	flex: 1 1 auto;
+	min-height: 0;
+	background: #cbd5e1;
+}
+
+.lt-sheet {
+	flex: 0 0 auto;
+	background: #fff;
+	border-top-left-radius: 18px;
+	border-top-right-radius: 18px;
+	box-shadow: 0 -6px 20px rgba(15, 23, 42, 0.12);
+	padding: 18px 20px 24px;
+	max-height: 46vh;
+	overflow-y: auto;
+}
+
+.lt-status-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 14px;
+}
+
+.lt-status-dot {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background: #94a3b8;
+	flex: none;
+}
+.lt-status-dot.is-pending { background: #f59e0b; }
+.lt-status-dot.is-active { background: #16a34a; box-shadow: 0 0 0 4px rgba(22,163,74,0.15); }
+.lt-status-dot.is-completed { background: #2563eb; }
+.lt-status-dot.is-cancelled { background: #dc2626; }
+
+.lt-status-label {
+	font-size: 16px;
+	font-weight: 600;
+	color: #0f172a;
+}
+
+.lt-stepper {
+	display: flex;
+	justify-content: space-between;
+	margin: 14px 0 18px;
+	position: relative;
+}
+.lt-stepper::before {
+	content: "";
+	position: absolute;
+	top: 9px;
+	left: 5%;
+	right: 5%;
+	height: 2px;
+	background: #e2e8f0;
+	z-index: 0;
+}
+.lt-step {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 6px;
+	flex: 1;
+}
+.lt-step .lt-step-dot {
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	background: #e2e8f0;
+	border: 2px solid #fff;
+}
+.lt-step.is-done .lt-step-dot { background: #16a34a; }
+.lt-step.is-current .lt-step-dot { background: #2563eb; }
+.lt-step span.lt-step-label {
+	font-size: 11px;
+	color: #64748b;
+	text-align: center;
+}
+
+.lt-info-row {
+	display: flex;
+	justify-content: space-between;
+	padding: 10px 0;
+	border-bottom: 1px solid #f1f5f9;
+	font-size: 14px;
+}
+.lt-info-row:last-child { border-bottom: none; }
+.lt-info-label { color: #64748b; }
+.lt-info-value { color: #0f172a; font-weight: 500; text-align: right; }
+.lt-info-value a { color: #2563eb; text-decoration: none; }
+
+.lt-updated {
+	margin-top: 10px;
+	font-size: 12px;
+	color: #94a3b8;
+	text-align: center;
+}
+
+.lt-error {
+	margin: auto;
+	padding: 24px;
+	text-align: center;
+	color: #475569;
+}
+
+/* Driver page */
+.lt-driver-card {
+	padding: 20px;
+	background: #fff;
+}
+.lt-driver-title {
+	font-size: 18px;
+	font-weight: 700;
+	color: #0f172a;
+	margin-bottom: 4px;
+}
+.lt-driver-sub {
+	font-size: 13px;
+	color: #64748b;
+	margin-bottom: 18px;
+}
+.lt-btn {
+	display: block;
+	width: 100%;
+	padding: 16px;
+	border: none;
+	border-radius: 12px;
+	font-size: 16px;
+	font-weight: 600;
+	cursor: pointer;
+	margin-top: 10px;
+}
+.lt-btn-primary { background: #16a34a; color: #fff; }
+.lt-btn-danger { background: #dc2626; color: #fff; }
+.lt-btn:disabled { opacity: 0.6; }
+
+.lt-pulse {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	color: #16a34a;
+	font-weight: 600;
+	font-size: 14px;
+	margin: 14px 0;
+}
+.lt-pulse-dot {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: #16a34a;
+	animation: lt-pulse 1.4s infinite;
+}
+@keyframes lt-pulse {
+	0% { box-shadow: 0 0 0 0 rgba(22,163,74,0.5); }
+	70% { box-shadow: 0 0 0 10px rgba(22,163,74,0); }
+	100% { box-shadow: 0 0 0 0 rgba(22,163,74,0); }
+}
+
+.lt-gps-status {
+	font-size: 12px;
+	color: #94a3b8;
+	margin-top: 8px;
+}

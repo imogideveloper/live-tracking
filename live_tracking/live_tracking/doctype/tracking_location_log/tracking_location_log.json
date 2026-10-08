@@ -1,0 +1,120 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "hash",
+ "creation": "2026-08-28 15:46:39.580593",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "tracking_session",
+  "recorded_at",
+  "column_break_log",
+  "latitude",
+  "longitude",
+  "section_break_meta",
+  "speed_kmh",
+  "heading",
+  "column_break_meta",
+  "accuracy_m"
+ ],
+ "fields": [
+  {
+   "fieldname": "tracking_session",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Tracking Session",
+   "options": "Tracking Session",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "default": "now",
+   "fieldname": "recorded_at",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Waktu",
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_log",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Float",
+   "label": "Latitude",
+   "precision": "6",
+   "reqd": 1
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Float",
+   "label": "Longitude",
+   "precision": "6",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_meta",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "speed_kmh",
+   "fieldtype": "Float",
+   "label": "Kecepatan (km/h)"
+  },
+  {
+   "fieldname": "heading",
+   "fieldtype": "Float",
+   "label": "Arah (derajat)"
+  },
+  {
+   "fieldname": "column_break_meta",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "accuracy_m",
+   "fieldtype": "Float",
+   "label": "Akurasi (meter)"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-28 15:46:39.580593",
+ "modified_by": "Administrator",
+ "module": "Live Tracking",
+ "name": "Tracking Location Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Admin Towing",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "recorded_at",
+ "sort_order": "DESC",
+ "states": []
+}

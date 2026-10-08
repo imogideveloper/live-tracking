@@ -1,0 +1,123 @@
+{
+ "actions": [],
+ "creation": "2026-09-15 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "currency",
+  "base_fare",
+  "column_break_fare",
+  "per_km_rate",
+  "min_fare",
+  "section_break_vehicle_rates",
+  "vehicle_type_rates",
+  "section_break_policy",
+  "cancellation_fee_percent",
+  "column_break_policy",
+  "emergency_contact_number"
+ ],
+ "fields": [
+  {
+   "default": "IDR",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "reqd": 1
+  },
+  {
+   "default": "50000",
+   "fieldname": "base_fare",
+   "fieldtype": "Currency",
+   "label": "Tarif Dasar",
+   "options": "currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_fare",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "10000",
+   "fieldname": "per_km_rate",
+   "fieldtype": "Currency",
+   "label": "Tarif per KM",
+   "options": "currency",
+   "reqd": 1
+  },
+  {
+   "default": "75000",
+   "fieldname": "min_fare",
+   "fieldtype": "Currency",
+   "label": "Tarif Minimum",
+   "options": "currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_vehicle_rates",
+   "fieldtype": "Section Break",
+   "label": "Pengali Tarif per Tipe Kendaraan"
+  },
+  {
+   "description": "Kosongkan / tipe yang tidak terdaftar di sini otomatis pakai pengali 1 (tarif normal).",
+   "fieldname": "vehicle_type_rates",
+   "fieldtype": "Table",
+   "options": "Towing Vehicle Type Rate"
+  },
+  {
+   "fieldname": "section_break_policy",
+   "fieldtype": "Section Break",
+   "label": "Kebijakan"
+  },
+  {
+   "default": "20",
+   "description": "Dikenakan ke customer kalau membatalkan trip SETELAH driver ter-assign (bukan saat masih mencari driver).",
+   "fieldname": "cancellation_fee_percent",
+   "fieldtype": "Percent",
+   "label": "Biaya Pembatalan (% dari estimasi harga)"
+  },
+  {
+   "fieldname": "column_break_policy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Nomor yang dihubungi saat customer/driver menekan tombol SOS.",
+   "fieldname": "emergency_contact_number",
+   "fieldtype": "Data",
+   "label": "Nomor Kontak Darurat"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-09-15 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Live Tracking",
+ "name": "Towing Tariff Setting",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Admin Towing"
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

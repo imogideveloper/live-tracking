@@ -1,0 +1,297 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "LT-.YYYY.-.#####",
+ "creation": "2026-08-28 15:46:38.230867",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "reference_doctype",
+  "reference_name",
+  "column_break_driver",
+  "driver",
+  "driver_name",
+  "driver_phone",
+  "unit_towing",
+  "sb_status",
+  "status",
+  "column_break_time",
+  "started_at",
+  "ended_at",
+  "sb_route",
+  "pickup_label",
+  "pickup_latitude",
+  "pickup_longitude",
+  "column_break_route",
+  "dropoff_label",
+  "dropoff_latitude",
+  "dropoff_longitude",
+  "sb_live_position",
+  "current_latitude",
+  "current_longitude",
+  "current_speed_kmh",
+  "column_break_position",
+  "current_heading",
+  "last_ping_at",
+  "sb_access",
+  "tracking_token",
+  "column_break_access",
+  "driver_token"
+ ],
+ "fields": [
+  {
+   "default": "Delivery Order Towing",
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Reference Type",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "label": "Reference Name",
+   "options": "reference_doctype",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_driver",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "driver",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Driver",
+   "options": "Driver"
+  },
+  {
+   "fetch_from": "driver.full_name",
+   "fieldname": "driver_name",
+   "fieldtype": "Data",
+   "label": "Nama Driver",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "driver.cell_number",
+   "fieldname": "driver_phone",
+   "fieldtype": "Data",
+   "label": "No. HP Driver",
+   "read_only": 1
+  },
+  {
+   "fieldname": "unit_towing",
+   "fieldtype": "Link",
+   "label": "Unit Towing",
+   "options": "Unit Towing"
+  },
+  {
+   "fieldname": "sb_status",
+   "fieldtype": "Section Break",
+   "label": "Status"
+  },
+  {
+   "bold": 1,
+   "default": "Pending",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Pending\nActive\nCompleted\nCancelled",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_time",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "started_at",
+   "fieldtype": "Datetime",
+   "label": "Mulai Perjalanan",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ended_at",
+   "fieldtype": "Datetime",
+   "label": "Selesai",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_route",
+   "fieldtype": "Section Break",
+   "label": "Rute"
+  },
+  {
+   "fieldname": "pickup_label",
+   "fieldtype": "Data",
+   "label": "Lokasi Pick Up"
+  },
+  {
+   "fieldname": "pickup_latitude",
+   "fieldtype": "Data",
+   "label": "Pick Up Latitude",
+   "description": "Gunakan titik (.) sebagai desimal, contoh: -6.182245"
+  },
+  {
+   "fieldname": "pickup_longitude",
+   "fieldtype": "Data",
+   "label": "Pick Up Longitude",
+   "description": "Gunakan titik (.) sebagai desimal, contoh: 106.909634"
+  },
+  {
+   "fieldname": "column_break_route",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dropoff_label",
+   "fieldtype": "Data",
+   "label": "Lokasi Tujuan"
+  },
+  {
+   "fieldname": "dropoff_latitude",
+   "fieldtype": "Data",
+   "label": "Tujuan Latitude",
+   "description": "Gunakan titik (.) sebagai desimal, contoh: -6.182245"
+  },
+  {
+   "fieldname": "dropoff_longitude",
+   "fieldtype": "Data",
+   "label": "Tujuan Longitude",
+   "description": "Gunakan titik (.) sebagai desimal, contoh: 106.909634"
+  },
+  {
+   "fieldname": "route_polyline",
+   "fieldtype": "Long Text",
+   "label": "Route Polyline (cache)",
+   "hidden": 1,
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_live_position",
+   "fieldtype": "Section Break",
+   "label": "Posisi Live"
+  },
+  {
+   "fieldname": "current_latitude",
+   "fieldtype": "Float",
+   "label": "Latitude Saat Ini",
+   "precision": "6",
+   "read_only": 1
+  },
+  {
+   "fieldname": "current_longitude",
+   "fieldtype": "Float",
+   "label": "Longitude Saat Ini",
+   "precision": "6",
+   "read_only": 1
+  },
+  {
+   "fieldname": "current_speed_kmh",
+   "fieldtype": "Float",
+   "label": "Kecepatan (km/h)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_position",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "current_heading",
+   "fieldtype": "Float",
+   "label": "Arah (derajat)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_ping_at",
+   "fieldtype": "Datetime",
+   "label": "Update Terakhir",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "sb_access",
+   "fieldtype": "Section Break",
+   "label": "Akses Link"
+  },
+  {
+   "fieldname": "tracking_token",
+   "fieldtype": "Data",
+   "label": "Tracking Token (Customer)",
+   "no_copy": 1,
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_access",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "driver_token",
+   "fieldtype": "Data",
+   "label": "Driver Token",
+   "no_copy": 1,
+   "permlevel": 1,
+   "read_only": 1,
+   "unique": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-28 15:46:38.230867",
+ "modified_by": "Administrator",
+ "module": "Live Tracking",
+ "name": "Tracking Session",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Admin Towing",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "reference_name",
+ "track_changes": 1
+}
