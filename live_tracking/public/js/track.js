@@ -60,6 +60,37 @@
 		return L.marker(latlng, opts).addTo(map);
 	}
 
+	// The vehicle icon used to teleport to its new spot every POLL_MS (5s)
+	// tick — correct, but reads as "stuttering" rather than driving. Tween
+	// it from wherever it visually is now to the newly-polled position over
+	// the same window as the poll interval, so by the time the next real
+	// fix arrives the icon has just smoothly arrived — constant-speed
+	// motion (not ease-out) reads as continuous driving rather than
+	// decelerating to a stop on every tick.
+	var moveAnim = null;
+
+	function animateMarkerTo(latlng) {
+		if (!currentMarker) {
+			currentMarker = L.marker(latlng, { title: "Driver", icon: emojiIcon("🚚", 46) }).addTo(map);
+			return;
+		}
+		if (moveAnim) cancelAnimationFrame(moveAnim);
+		var start = currentMarker.getLatLng();
+		var from = [start.lat, start.lng];
+		var to = latlng;
+		var t0 = performance.now();
+
+		function step(now) {
+			var t = Math.min(1, (now - t0) / POLL_MS);
+			currentMarker.setLatLng([
+				from[0] + (to[0] - from[0]) * t,
+				from[1] + (to[1] - from[1]) * t,
+			]);
+			moveAnim = t < 1 ? requestAnimationFrame(step) : null;
+		}
+		moveAnim = requestAnimationFrame(step);
+	}
+
 	function timeAgo(dtString) {
 		if (!dtString) return "-";
 		var then = new Date(dtString.replace(" ", "T"));
@@ -172,7 +203,7 @@
 
 		if (data.current && data.current.latitude && data.current.longitude) {
 			var cll = [data.current.latitude, data.current.longitude];
-			currentMarker = setMarker(currentMarker, cll, { title: "Driver", icon: emojiIcon("🚚", 46) });
+			animateMarkerTo(cll);
 			bounds.push(cll);
 
 			var last = trail[trail.length - 1];
