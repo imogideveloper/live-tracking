@@ -246,14 +246,17 @@ def get_trip_history(limit: int = 20):
 	"""Past (and current) trips for this driver, most recently updated
 	first — so the driver app has something to show even on a day with
 	nothing currently Assigned, instead of a permanently empty screen.
-	Drivers also just want to see what they did before, ongoing."""
+	Drivers also just want to see what they did before, ongoing. Carries
+	the same detail fields as get_active_trip() so the app can show a
+	detail view per row, not just the summary card."""
 	driver = _get_driver()
-	return frappe.get_all(
+	rows = frappe.get_all(
 		"Delivery Order Towing",
 		filters={"driver": driver.name, "docstatus": ["<", 2], "status": ["!=", "Draft"]},
 		fields=[
 			"name",
 			"status",
+			"customer",
 			"customer_name",
 			"nomor_polisi",
 			"lokasi_pickup",
@@ -263,10 +266,26 @@ def get_trip_history(limit: int = 20):
 			"waktu_pickup",
 			"waktu_delivered",
 			"waktu_done",
+			"foto_kendaraan",
+			"foto_delivered",
 		],
 		order_by="modified desc",
 		limit_page_length=cint(limit) or 20,
 	)
+
+	customers = {r.customer for r in rows if r.customer}
+	phones = (
+		{
+			c.name: c.mobile_no
+			for c in frappe.get_all("Customer", filters={"name": ["in", list(customers)]}, fields=["name", "mobile_no"])
+		}
+		if customers
+		else {}
+	)
+	for r in rows:
+		r["customer_phone"] = phones.get(r.pop("customer"))
+
+	return rows
 
 
 @frappe.whitelist()
