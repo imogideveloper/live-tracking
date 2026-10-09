@@ -144,3 +144,62 @@ def get_fleet_overview():
 			)
 
 	return result
+
+
+@frappe.whitelist()
+def get_driver_route(driver: str):
+	"""Road-route line for ONE driver, fetched on demand when the Owner taps
+	that driver's marker — not computed for the whole fleet on every poll,
+	since a 5-driver map would otherwise fire 5 external OSRM calls every
+	refresh for routes nobody's looking at. Target is the pickup point
+	until the driver has confirmed pickup, then the dropoff point —
+	matches the line the driver app itself shows for the same trip."""
+	do = frappe.db.get_value(
+		"Delivery Order Towing",
+		{"driver": driver, "status": ["in", ACTIVE_DO_STATUSES], "docstatus": ["<", 2]},
+		["name", "status"],
+		as_dict=True,
+	)
+	if not do:
+		return {"route": [], "target": None}
+
+	session_row = frappe.db.get_value(
+		"Tracking Session",
+		{"reference_doctype": "Delivery Order Towing", "reference_name": do.name},
+		[
+			"current_latitude",
+			"current_longitude",
+			"pickup_label",
+			"pickup_latitude",
+			"pickup_longitude",
+			"dropoff_label",
+			"dropoff_latitude",
+			"dropoff_longitude",
+		],
+		as_dict=True,
+	)
+	if not session_row:
+		return {"route": [], "target": None}
+
+	from live_tracking.api import routing
+
+	cur_lat, cur_lng = routing.real_position(session_row.current_latitude, session_row.current_longitude)
+	if not cur_lat:
+		# Tracking Session hasn't gotten a ping yet — fall back to the
+		# Driver doctype's own last-known position (same fallback
+		# get_fleet_overview uses for the marker itself).
+		cur_lat, cur_lng = _real_position(
+			*(frappe.db.get_value("Driver", driver, ["custom_current_latitude", "custom_current_longitude"]) or (None, None))
+		)
+	if not cur_lat:
+		return {"route": [], "target": None}
+
+	leg, label, to_lat, to_lng = routing.leg_target_for_status(do.status, session_row)
+	to_lat, to_lng = routing.real_position(to_lat, to_lng)
+	if not to_lat:
+		return {"route": [], "target": None}
+
+	return {
+		"route": routing.fetch_route(cur_lat, cur_lng, to_lat, to_lng),
+		"target": {"leg": leg, "label": label, "latitude": to_lat, "longitude": to_lng},
+	}

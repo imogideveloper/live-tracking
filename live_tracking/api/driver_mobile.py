@@ -12,6 +12,7 @@ from frappe.model.workflow import apply_workflow, get_transitions
 from frappe.utils import cint, flt, now_datetime, today
 
 from live_tracking.api import driver as guest_driver
+from live_tracking.api import routing
 from live_tracking.api import tracking
 
 ACTIVE_DO_STATUSES = ["Assigned", "Pick Up", "Delivered"]
@@ -226,6 +227,21 @@ def get_active_trip():
 
 	customer_phone = frappe.db.get_value("Customer", do.customer, "mobile_no") if do.customer else None
 
+	# Which leg the driver is currently on: route to the pickup spot before
+	# they've confirmed pickup, route to the dropoff spot after — recomputed
+	# from wherever their GPS says they are right now, not the static
+	# pickup->dropoff planned route used on the customer's /track page.
+	leg_route = []
+	leg_target = None
+	if session_row:
+		cur_lat, cur_lng = routing.real_position(session_row.get("current_latitude"), session_row.get("current_longitude"))
+		if cur_lat:
+			leg, label, to_lat, to_lng = routing.leg_target_for_status(do.status, session_row)
+			to_lat, to_lng = routing.real_position(to_lat, to_lng)
+			if to_lat:
+				leg_route = routing.fetch_route(cur_lat, cur_lng, to_lat, to_lng)
+				leg_target = {"leg": leg, "label": label, "latitude": to_lat, "longitude": to_lng}
+
 	return {
 		"delivery_order_towing": do.name,
 		"status": do.status,
@@ -238,6 +254,8 @@ def get_active_trip():
 		"foto_delivered": do.foto_delivered,
 		"available_actions": [t.get("action") for t in transitions],
 		"session": tracking.build_tracking_payload(session_row) if session_row else None,
+		"leg_route": leg_route,
+		"leg_target": leg_target,
 	}
 
 
