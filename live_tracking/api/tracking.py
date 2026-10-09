@@ -83,18 +83,21 @@ def build_tracking_payload(session):
 				"tipe": ref.tipe_kendaraan,
 			}
 			if ref.kendaraan_towing:
+				# merk/model dropped: not used by this business, and the
+				# production "Unit Towing" table never got migrated to add
+				# those columns, which crashed every driver/track load with
+				# "Unknown column 'merk'" — not worth a migrate for data
+				# nobody fills in.
 				unit = frappe.db.get_value(
 					"Unit Towing",
 					ref.kendaraan_towing,
-					["nomor_polisi", "jenis_kendaraan", "merk", "model", "nomor_rangka"],
+					["nomor_polisi", "jenis_kendaraan", "nomor_rangka"],
 					as_dict=True,
 				)
 				if unit:
 					driver_vehicle = {
 						"nomor_polisi": unit.nomor_polisi,
 						"jenis_kendaraan": unit.jenis_kendaraan,
-						"merk": unit.merk,
-						"model": unit.model,
 						"nomor_rangka": unit.nomor_rangka,
 					}
 
