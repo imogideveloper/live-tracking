@@ -63,6 +63,12 @@ KNOWN_LOCATIONS = {
 	"JAKARTA SELATAN": (-6.243953, 106.802838),  # 5 dealers
 	"JAKARTA BARAT": (-6.197299, 106.760216),  # 6 dealers
 	"DEPOK": (-6.352555, 106.796864),  # 3 dealers
+	# Not real depots/cities — the Owner's own test route (DO-TOW-2026-0761)
+	# used to check that the moving truck icon actually works, pinned here
+	# from a shared GPS location so this specific test trip gets a real
+	# route line instead of "belum punya titik koordinat".
+	"GARTIP": (-6.306390, 106.889013),
+	"KOPI LOKI": (-6.314874, 106.893492),
 }
 
 
