@@ -194,12 +194,13 @@ def get_driver_route(driver: str):
 	if not cur_lat:
 		return {"route": [], "target": None}
 
-	leg, label, to_lat, to_lng = routing.leg_target_for_status(do.status, session_row)
-	to_lat, to_lng = routing.real_position(to_lat, to_lng)
-	if not to_lat:
-		return {"route": [], "target": None}
+	leg, label, to_lat_raw, to_lng_raw = routing.leg_target_for_status(do.status, session_row)
+	to_lat, to_lng = routing.real_position(to_lat_raw, to_lng_raw)
+	# target carries the label even without coordinates — e.g. a pickup/
+	# dropoff name that was never geocoded ("Gartip", "Kopi Loki", ...) —
+	# so the Owner app can say *which* location is missing a point instead
+	# of just showing nothing.
+	target = {"leg": leg, "label": label, "latitude": to_lat, "longitude": to_lng} if label else None
+	route = routing.fetch_route(cur_lat, cur_lng, to_lat, to_lng) if to_lat else []
 
-	return {
-		"route": routing.fetch_route(cur_lat, cur_lng, to_lat, to_lng),
-		"target": {"leg": leg, "label": label, "latitude": to_lat, "longitude": to_lng},
-	}
+	return {"route": route, "target": target}

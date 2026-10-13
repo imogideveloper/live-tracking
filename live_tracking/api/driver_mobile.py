@@ -231,16 +231,23 @@ def get_active_trip():
 	# they've confirmed pickup, route to the dropoff spot after — recomputed
 	# from wherever their GPS says they are right now, not the static
 	# pickup->dropoff planned route used on the customer's /track page.
+	#
+	# leg_target is returned even when it has no coordinates (label set,
+	# latitude/longitude null) — that happens when the pickup/dropoff label
+	# ("Gartip", "Kopi Loki", ...) was never geocoded (not a known depot/city
+	# and Nominatim couldn't resolve it either). Without this split, the app
+	# had no way to tell "no GPS yet" apart from "this location has no
+	# coordinates on file" and showed the wrong message for the second case.
 	leg_route = []
 	leg_target = None
 	if session_row:
 		cur_lat, cur_lng = routing.real_position(session_row.get("current_latitude"), session_row.get("current_longitude"))
-		if cur_lat:
-			leg, label, to_lat, to_lng = routing.leg_target_for_status(do.status, session_row)
-			to_lat, to_lng = routing.real_position(to_lat, to_lng)
-			if to_lat:
-				leg_route = routing.fetch_route(cur_lat, cur_lng, to_lat, to_lng)
-				leg_target = {"leg": leg, "label": label, "latitude": to_lat, "longitude": to_lng}
+		leg, label, to_lat_raw, to_lng_raw = routing.leg_target_for_status(do.status, session_row)
+		to_lat, to_lng = routing.real_position(to_lat_raw, to_lng_raw)
+		if label:
+			leg_target = {"leg": leg, "label": label, "latitude": to_lat, "longitude": to_lng}
+		if cur_lat and to_lat:
+			leg_route = routing.fetch_route(cur_lat, cur_lng, to_lat, to_lng)
 
 	return {
 		"delivery_order_towing": do.name,
