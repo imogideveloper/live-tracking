@@ -245,9 +245,15 @@ def get_active_trip():
 		leg, label, to_lat_raw, to_lng_raw = routing.leg_target_for_status(do.status, session_row)
 		to_lat, to_lng = routing.real_position(to_lat_raw, to_lng_raw)
 		if label:
-			leg_target = {"leg": leg, "label": label, "latitude": to_lat, "longitude": to_lng}
+			leg_target = {
+				"leg": leg, "label": label, "latitude": to_lat, "longitude": to_lng,
+				"distance_m": None, "duration_s": None,
+			}
 		if cur_lat and to_lat:
-			leg_route = routing.fetch_route(cur_lat, cur_lng, to_lat, to_lng)
+			route_data = routing.fetch_route(cur_lat, cur_lng, to_lat, to_lng)
+			leg_route = route_data["points"]
+			leg_target["distance_m"] = route_data["distance_m"]
+			leg_target["duration_s"] = route_data["duration_s"]
 
 	return {
 		"delivery_order_towing": do.name,

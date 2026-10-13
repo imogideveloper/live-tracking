@@ -29,7 +29,10 @@ def real_position(lat, lng):
 
 
 def fetch_route(from_lat, from_lng, to_lat, to_lng, cache_seconds=45):
-	"""Road-following route as [[lat, lng], ...] from one point to another.
+	"""Road-following route from one point to another:
+	`{"points": [[lat, lng], ...], "distance_m": float|None, "duration_s": float|None}`.
+	Empty/None fields mean no coordinates to route between, or the OSRM
+	call itself failed.
 
 	Short-TTL cached (45s, not the "forever" cache the static planned route
 	uses) because the "from" point here is a moving driver — a fresh call
@@ -37,10 +40,12 @@ def fetch_route(from_lat, from_lng, to_lat, to_lng, cache_seconds=45):
 	public OSRM demo server for no visible benefit, but it still needs to
 	move noticeably more often than the planned route ever changes.
 	"""
+	empty = {"points": [], "distance_m": None, "duration_s": None}
+
 	from_lat, from_lng = real_position(from_lat, from_lng)
 	to_lat, to_lng = real_position(to_lat, to_lng)
 	if not (from_lat and to_lat):
-		return []
+		return empty
 
 	cache_key = (
 		f"lt_leg_route:{round(from_lat, 3)}:{round(from_lng, 3)}:"
@@ -52,18 +57,23 @@ def fetch_route(from_lat, from_lng, to_lat, to_lng, cache_seconds=45):
 
 	import requests
 
-	route = []
+	result = dict(empty)
 	try:
 		url = OSRM_URL.format(lon1=from_lng, lat1=from_lat, lon2=to_lng, lat2=to_lat)
 		resp = requests.get(url, params={"overview": "full", "geometries": "geojson"}, timeout=8)
 		data = resp.json()
-		coords = data["routes"][0]["geometry"]["coordinates"]
-		route = [[lat, lng] for lng, lat in coords]
+		route = data["routes"][0]
+		coords = route["geometry"]["coordinates"]
+		result = {
+			"points": [[lat, lng] for lng, lat in coords],
+			"distance_m": route.get("distance"),
+			"duration_s": route.get("duration"),
+		}
 	except Exception:
 		frappe.log_error("Gagal ambil rute OSRM (live leg)", "Live Tracking OSRM Error")
 
-	frappe.cache().set_value(cache_key, route, expires_in_sec=cache_seconds)
-	return route
+	frappe.cache().set_value(cache_key, result, expires_in_sec=cache_seconds)
+	return result
 
 
 def leg_target_for_status(status, session_row):

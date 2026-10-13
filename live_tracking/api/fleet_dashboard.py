@@ -200,7 +200,16 @@ def get_driver_route(driver: str):
 	# dropoff name that was never geocoded ("Gartip", "Kopi Loki", ...) —
 	# so the Owner app can say *which* location is missing a point instead
 	# of just showing nothing.
-	target = {"leg": leg, "label": label, "latitude": to_lat, "longitude": to_lng} if label else None
-	route = routing.fetch_route(cur_lat, cur_lng, to_lat, to_lng) if to_lat else []
+	target = (
+		{"leg": leg, "label": label, "latitude": to_lat, "longitude": to_lng, "distance_m": None, "duration_s": None}
+		if label
+		else None
+	)
+	route = []
+	if to_lat:
+		route_data = routing.fetch_route(cur_lat, cur_lng, to_lat, to_lng)
+		route = route_data["points"]
+		target["distance_m"] = route_data["distance_m"]
+		target["duration_s"] = route_data["duration_s"]
 
 	return {"route": route, "target": target}
