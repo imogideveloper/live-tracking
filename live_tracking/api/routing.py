@@ -28,17 +28,24 @@ def real_position(lat, lng):
 	return lat, lng
 
 
-def fetch_route(from_lat, from_lng, to_lat, to_lng, cache_seconds=45):
+def fetch_route(from_lat, from_lng, to_lat, to_lng, cache_seconds=20):
 	"""Road-following route from one point to another:
 	`{"points": [[lat, lng], ...], "distance_m": float|None, "duration_s": float|None}`.
 	Empty/None fields mean no coordinates to route between, or the OSRM
 	call itself failed.
 
-	Short-TTL cached (45s, not the "forever" cache the static planned route
-	uses) because the "from" point here is a moving driver — a fresh call
-	on literally every GPS ping (as often as every 15-20s) would hammer the
-	public OSRM demo server for no visible benefit, but it still needs to
-	move noticeably more often than the planned route ever changes.
+	Short-TTL cached because the "from" point here is a moving driver — a
+	fresh call on literally every GPS ping (as often as every 15-20s) would
+	hammer the public OSRM demo server for no visible benefit. Rounding
+	`from_lat`/`from_lng` to 3 decimals (~111m buckets) meant a driver who
+	hadn't crossed that whole bucket yet — easy on foot, or even driving
+	for a short test — kept getting back the SAME route computed from
+	wherever they started, even though the live marker (now a separate,
+	continuously-updating GPS stream on the client) had visibly moved on.
+	That read as "the route doesn't go where I'm actually heading" or
+	loops back to the start. 4 decimals (~11m) plus a TTL matching the
+	ping cadence keeps the route meaningfully fresher without still
+	calling OSRM on every single frame.
 	"""
 	empty = {"points": [], "distance_m": None, "duration_s": None}
 
@@ -48,7 +55,7 @@ def fetch_route(from_lat, from_lng, to_lat, to_lng, cache_seconds=45):
 		return empty
 
 	cache_key = (
-		f"lt_leg_route:{round(from_lat, 3)}:{round(from_lng, 3)}:"
+		f"lt_leg_route:{round(from_lat, 4)}:{round(from_lng, 4)}:"
 		f"{round(to_lat, 4)}:{round(to_lng, 4)}"
 	)
 	cached = frappe.cache().get_value(cache_key)
